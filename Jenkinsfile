@@ -35,7 +35,7 @@ def init_git_win() {
 
 stage("Sanity Check") {
   timeout(time: max_time, unit: 'MINUTES') {
-    node('linux') {
+    node('xg-linux') {
       ws('workspace/tvm/sanity') {
         init_git()
         sh "${docker_run} lint  ./tests/scripts/task_lint.sh"
@@ -80,7 +80,7 @@ def unpack_lib(name, libs) {
 
 stage('Build') {
   parallel 'GPU': {
-    node('GPU' && 'linux') {
+    node('GPU' && 'xg-linux') {
       ws('workspace/tvm/build-gpu') {
         init_git()
         sh """
@@ -114,7 +114,7 @@ stage('Build') {
     }
   },
   'CPU': {
-    node('CPU' && 'linux') {
+    node('CPU' && 'xg-linux') {
       ws('workspace/tvm/build-cpu') {
         init_git()
         sh """
@@ -131,7 +131,7 @@ stage('Build') {
     }
   },
   'i386': {
-    node('CPU' && 'linux') {
+    node('CPU' && 'xg-linux') {
       ws('workspace/tvm/build-i386') {
         init_git()
         sh """
@@ -182,7 +182,7 @@ stage('Build') {
 
 stage('Unit Test') {
   parallel 'python2/3: GPU': {
-    node('GPU' && 'linux') {
+    node('GPU' && 'xg-linux') {
       ws('workspace/tvm/ut-python-gpu') {
         init_git()
         unpack_lib('gpu', tvm_multilib)
@@ -199,7 +199,7 @@ stage('Unit Test') {
     }
   },
   'python2/3: i386': {
-    node('CPU' && 'linux') {
+    node('CPU' && 'xg-linux') {
       ws('workspace/tvm/ut-python-i386') {
         init_git()
         unpack_lib('i386', tvm_multilib)
@@ -217,7 +217,7 @@ stage('Unit Test') {
     }
   },
   'cpp': {
-    node('CPU' && 'linux') {
+    node('CPU' && 'xg-linux') {
       ws('workspace/tvm/ut-cpp') {
         init_git()
         unpack_lib('cpu', tvm_lib)
@@ -228,7 +228,7 @@ stage('Unit Test') {
     }
   },
   'java': {
-    node('GPU' && 'linux') {
+    node('GPU' && 'xg-linux') {
       ws('workspace/tvm/ut-java') {
         init_git()
         unpack_lib('gpu', tvm_multilib)
@@ -243,7 +243,7 @@ stage('Unit Test') {
 
 stage('Integration Test') {
   parallel 'python': {
-    node('GPU' && 'linux') {
+    node('GPU' && 'xg-linux') {
       ws('workspace/tvm/it-python-gpu') {
         init_git()
         unpack_lib('gpu', tvm_multilib)
@@ -269,7 +269,7 @@ stage('Integration Test') {
     }
   },
   'docs': {
-    node('GPU' && 'linux') {
+    node('GPU' && 'xg-linux') {
       ws('workspace/tvm/docs-python-gpu') {
         init_git()
         unpack_lib('gpu', tvm_multilib)
